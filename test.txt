@@ -1,8 +1,0 @@
-this is a test file for git learning.
-
-now i change the content.
-
-modifid again.
-
-checkout
-11
