@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns=http://www.w3.org/1999/xhtml>
+<head>
+<script src="jquery.js"></script>
+<script>
+function setHeader(xhr) {
+    var key = "abIimx2iVC4F7KQQi74zFo3EQMw/3U37VBIcsdISl5JQ2NjTeFqeKQ==";
+    xhr.setRequestHeader('Authorization', key);
+}
+function rest(){
+    var url = "http://minol.tracknet.io:7006/api/hist/data";
+    var data = JSON.stringify({            
+              "begdate": "2016-01-01",
+              "enddate": "2017-04-17"
+    });
+    $.ajax({
+              type: 'POST',
+              url: url,
+              data: data,
+              success: function(d){ console.log(d);},
+              error: function(XMLHttpRequest, textStatus, errorThrown) { },
+              dataType: 'json',
+              beforeSend:setHeader
+});
+}
+
+</script>
+</head>
+<body>
+<input type="button" name="d" onclick="rest()" value="hist" />
+</body>
+</html>

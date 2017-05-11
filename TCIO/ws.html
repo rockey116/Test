@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns=http://www.w3.org/1999/xhtml>
+<head>
+<script src="jquery.js"></script>
+<script>
+var key, urlPr;
+var ddd;
+function init(dev) {
+	if (dev) {
+		key = "abIimx2iVC4F7KQQi74zFoPCVxG1QP5d+QThrLOeuzSgAfBJIUDcTw==";
+		urlPr = "http://rc.dev.tracknet.io:7006/api";
+	} else {
+		key = "abIimx2iVC4F7KQQi74zFo3EQMw/3U37VBIcsdISl5JQ2NjTeFqeKQ==";
+		urlPr = "http://minol.tracknet.io:7006/api";
+	}
+}
+
+function setHeader(xhr) {
+	xhr.setRequestHeader('Authorization', key);
+}
+function hist() {
+	$("#res").val('reading...');
+	var data = JSON.stringify({
+			begdate : "2017-05-11",
+			enddate : "2017-05-11"
+		});
+	$.ajax({
+		type : 'POST',
+		url : urlPr + '/hist/data',
+		data : data,
+		success : function (d) {
+			ddd = d;
+		    console.log(d);
+			//$("#res").val(JSON.stringify(d));
+			for(i = 0; i<d.data.length; i++){
+				//console.log(new Date(d.data[i].upinfo[0].ArrTime * 1000));
+				//if(d.data[i].DevEui == "FF-00-00-08-FF-00-00-08") console.log("get:",d.data[i]);
+			}
+		},
+		error : function (XMLHttpRequest, textStatus, errorThrown) {},
+		complete : function (XMLHttpRequest, textStatus) {
+			console.log('complete')
+		},
+		dataType : 'json',
+		beforeSend : setHeader
+	});
+}
+
+//device/list
+function fn1() {
+	$("#res").val('reading...');
+	$.ajax({
+		type : 'get',
+		url : urlPr + '/device/list',
+		success : function (d) {
+			console.log(d);
+			$("#res").val(JSON.stringify(d));
+		},
+		error : function (XMLHttpRequest, textStatus, errorThrown) {},
+		complete : function (XMLHttpRequest, textStatus) {
+			console.log('complete')
+		},
+		dataType : 'json',
+		beforeSend : setHeader
+	});
+}
+
+//router/list
+function fn2() {
+	$("#res").val('reading...');
+	$.ajax({
+		type : 'get',
+		url : urlPr + '/router/list',
+		success : function (d) {
+			console.log(d);
+			$("#res").val(JSON.stringify(d));
+		},
+		error : function (XMLHttpRequest, textStatus, errorThrown) {},
+		complete : function (XMLHttpRequest, textStatus) {
+			console.log('complete')
+		},
+		dataType : 'json',
+		beforeSend : setHeader
+	});
+}
+
+//api
+function fn3() {
+	$("#res").val('reading...');
+	$.ajax({
+		type : 'post',
+		url : urlPr + '/API/',
+		data : '{"version":1}',
+		success : function (d) {
+			console.log(d);
+			$("#res").val(JSON.stringify(d));
+		},
+		error : function (XMLHttpRequest, textStatus, errorThrown) {},
+		complete : function (XMLHttpRequest, textStatus) {
+			console.log('complete')
+		},
+		dataType : 'json',
+		beforeSend : setHeader
+	});
+}
+function ws() {
+
+	$("#res").val('connecting...');
+	// 创建一个Socket实例
+	var socket = new WebSocket('ws://rc.dev.tracknet.io:7000/owner-info');
+	//var socket = new WebSocket('ws://tcweb.eu.tracknet.io:7001/owner-info');
+	//var socket = new WebSocket('ws://tcweb.eu.tracknet.io:7001/');
+
+	// 打开Socket
+	socket.onopen = function (event) {
+		console.log('ws connected!');
+		var req = JSON.stringify({
+				"owner" : "c::1"
+			});
+		// 发送一个初始化消息
+		socket.send(req);
+		
+
+	}; 
+
+	//监听Socket的关闭
+	socket.onclose = function (event) {
+		console.log('Client notified socket has closed', event);
+	};
+
+	// 监听消息
+	socket.onmessage = function (event) {
+		console.log('Client received a message', event);
+		$("#res").val(JSON.stringify(event));
+		
+		
+	};
+	
+	socket.onerror = function (evt) { 
+		console.log('err', event);
+	}; 
+}
+
+init(true);
+</script>
+</head>
+<body>
+<input type="radio" name="d" checked="checked" onclick="init(true)" />dev &nbsp;<input type="radio" name="d"  onclick="init(false)" />pro<p>
+<input type="button" value="test ws" onclick="ws()" /><p>
+<input type="button" value="historic data" onclick="hist()" /><p>
+<input type="button" value="device list" onclick="fn1()" /><p>
+<input type="button" value="router list" onclick="fn2()" /><p>
+<div>
+<textarea id="res"  rows="20" cols="60" readonly="readonly" height=></textarea>
+</div>
+</body>
+</html>
