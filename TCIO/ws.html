@@ -103,37 +103,49 @@ function fn3() {
 		beforeSend : setHeader
 	});
 }
+function ws1(){
+	var socket = new WebSocket(' ws://eu2.tracknet.io:7002/owner-c::1');
+	socket.onopen = function(){ console.log('ws1 connected!'); }
+
+	socket.onmessage = function (event) {
+		console.log('w1 received a message', event);
+	};
+
+	socket.onclose = function (event) {
+		console.log('w1 closed', event);
+	};
+}
 function ws() {
 
 	$("#res").val('connecting...');
-	// ´´½¨Ò»¸öSocketÊµÀý
+	// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½SocketÊµï¿½ï¿½
 	var socket = new WebSocket('ws://rc.dev.tracknet.io:7000/owner-info');
 	//var socket = new WebSocket('ws://tcweb.eu.tracknet.io:7001/owner-info');
 	//var socket = new WebSocket('ws://tcweb.eu.tracknet.io:7001/');
 
-	// ´ò¿ªSocket
+	// ï¿½ï¿½Socket
 	socket.onopen = function (event) {
 		console.log('ws connected!');
 		var req = JSON.stringify({
 				"owner" : "c::1"
 			});
-		// ·¢ËÍÒ»¸ö³õÊ¼»¯ÏûÏ¢
+		// ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ï¢
 		socket.send(req);
 		
 
 	}; 
 
-	//¼àÌýSocketµÄ¹Ø±Õ
+	//ï¿½ï¿½ï¿½ï¿½Socketï¿½Ä¹Ø±ï¿½
 	socket.onclose = function (event) {
-		console.log('Client notified socket has closed', event);
+		console.log('ws closed', event);
 	};
 
-	// ¼àÌýÏûÏ¢
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 	socket.onmessage = function (event) {
-		console.log('Client received a message', event);
+		console.log('ws received a message', event);
 		$("#res").val(JSON.stringify(event));
 		
-		
+		ws1();
 	};
 	
 	socket.onerror = function (evt) { 
